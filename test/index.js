@@ -424,6 +424,42 @@ describe('auction', function () {
 
   });
 
+  describe('#reset', function () {
+
+    it('should allow destroying and auction', function (done) {
+      var options = clone(singleAuction);
+      var auctioneer = clone(agents[0]);
+      var bidder = clone(agents[1]);
+      var auction = Auction.create(options);
+      auction.start(auctioneer, function (err) {
+        if (err) return done(err);
+        var bid = { price: 25000, agentId: bidder.agentId };
+        auction.bid(bid, function (err, b) {
+          if (err) return done(err);
+          auction.reset();
+          auction.should.have.properties({
+            bids: [],
+            outBid: {},
+            bestBid: {},
+            started: {},
+            ended: {},
+            saleId: null,
+            saleDate: null,
+            minPrice: 0,
+            openPrice: 0,
+            increment: 1,
+            minIncrement: 1,
+            destroyed: false,
+            initialized: true,
+            auctionStatus: 'created'
+          });
+          done();
+        });
+      });
+    });
+
+  });
+
   describe('#destroy', function () {
 
     it('should allow destroying and auction', function (done) {
