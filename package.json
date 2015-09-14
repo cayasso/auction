@@ -1,0 +1,27 @@
+{
+  "name": "auction",
+  "version": "0.1.0",
+  "description": "Easy way to create auctions",
+  "author": {
+    "name": "Jonathan Brumley",
+    "email": "cayasso@gmail.com"
+  },
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:DefaultDynamics/verifyd-foreclosure.git"
+  },
+  "dependencies": {
+    "debug": "^2.2.0",
+    "eventemitter3": "^1.1.1",
+    "lodash": "^3.10.1",
+    "moment": "^2.10.6",
+    "predefine": "^0.1.2",
+    "yeast": "^0.1.2"
+  },
+  "devDependencies": {
+    "mocha": "~2.3.2",
+    "pre-commit": "^1.1.1",
+    "should": "~7.1.0"
+  }
+}

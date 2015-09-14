@@ -1,0 +1,9 @@
+[{
+  "agentId": "abc123"
+},
+{
+  "agentId": "abc456",
+  "openPrice": 2000
+},{
+  "agentId": "def123"
+}]
