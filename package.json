@@ -7,10 +7,23 @@
     "email": "cayasso@gmail.com"
   },
   "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/cayasso/auction.git"
   },
+  "keywords": [
+    "bid",
+    "bidder",
+    "auction",
+    "auctioneer",
+    "trade",
+    "market",
+    "sale",
+    "ebay"
+  ],
   "dependencies": {
     "cuid": "^1.3.8",
     "debug": "^2.2.0",
