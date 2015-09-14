@@ -4,12 +4,13 @@ var clone = require('./common').clone;
 var should = require('should');
 var agents = require('./fixtures/agents.json');
 var singleAuction = require('./fixtures/auction.json');
+var _ = require('lodash');
 
 describe('auction', function () {
 
   it('should create auction', function () {
     var options = clone(singleAuction);
-    var auction = Auction.create(options);
+    var auction = Auction(options);
     auction.id.should.be.a.Number;
     auction.should.have.properties(options);
     auction.initialized.should.be.ok;
@@ -17,7 +18,7 @@ describe('auction', function () {
 
   it('should return json data', function () {
     var options = clone(singleAuction);
-    var auction = Auction.create(options);
+    var auction = Auction(options);
     auction.data.should.have.properties(options);
     auction.data.should.have.properties([
       'outBid', 'bestBid'
@@ -27,7 +28,7 @@ describe('auction', function () {
   it('should return error on invalid auction id', function (done) {
     var options = clone(singleAuction);
     options.id = null;
-    Auction.create(options, function (err) {
+    Auction(options, function (err) {
       err.message.should.match(/Invalid auction ID/);
       done();
     });
@@ -36,7 +37,7 @@ describe('auction', function () {
   it('should return error on invalid opening price', function (done) {
     var options = clone(singleAuction);
     options.openPrice = '123';
-    Auction.create(options, function (err) {
+    Auction(options, function (err) {
       err.message.should.match(/Invalid open/);
       done();
     });
@@ -45,7 +46,7 @@ describe('auction', function () {
   it('should return error on invalid minimum price', function (done) {
     var options = clone(singleAuction);
     options.minPrice = '123';
-    Auction.create(options, function (err) {
+    Auction(options, function (err) {
       err.message.should.match(/Invalid min/);
       done();
     });
@@ -56,7 +57,7 @@ describe('auction', function () {
     it('should allow starting an auction', function (done) {
       var options = clone(singleAuction);
       var agent = clone(agents[0]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start(agent, function (err) {
         if (err) return done(err);
         auction.auctionStatus.should.be.eql('started');
@@ -67,7 +68,7 @@ describe('auction', function () {
     it('should allow starting an auction with opening price', function (done) {
       var options = clone(singleAuction);
       var agent = clone(agents[1]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start(agent, function (err) {
         if (err) return done(err);
         auction.auctionStatus.should.be.eql('started');
@@ -79,7 +80,7 @@ describe('auction', function () {
     it('should set started agentId and timestamp', function (done) {
       var options = clone(singleAuction);
       var agent = clone(agents[2]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start(agent, function (err) {
         if (err) return done(err);
         auction.auctionStatus.should.be.eql('started');
@@ -91,7 +92,7 @@ describe('auction', function () {
 
     it('should not start if agent is invalid', function (done) {
       var options = clone(singleAuction);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start({ agentId: null }, function (err) {
         auction.auctionStatus.should.be.eql('created');
         err.message.should.match(/Invalid agent/)
@@ -102,7 +103,7 @@ describe('auction', function () {
     it('should not start if opening price is invalid', function (done) {
       var options = clone(singleAuction);
       var agent = clone(agents[0]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       agent.openPrice = '2000';
       auction.start(agent, function (err) {
         auction.auctionStatus.should.be.eql('created');
@@ -114,7 +115,7 @@ describe('auction', function () {
     it('should not start an already started auction', function (done) {
       var options = clone(singleAuction);
       var agent = clone(agents[0]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start(agent, function (err) {
         if (err) return done(err);
         auction.start(agent, function (err) {
@@ -127,7 +128,7 @@ describe('auction', function () {
     it('should not start an already ended auction', function (done) {
       var options = clone(singleAuction);
       var agent = clone(agents[0]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start(agent, function (err) {
         if (err) return done(err);
         auction.end(agent, function (err) {
@@ -147,7 +148,7 @@ describe('auction', function () {
     it('should allow ending an auction', function (done) {
       var options = clone(singleAuction);
       var agent = clone(agents[0]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start(agent, function (err) {
         if (err) return done(err);
         auction.end(agent, function (err) {
@@ -161,7 +162,7 @@ describe('auction', function () {
     it('should set ended agentId and timestamp', function (done) {
       var options = clone(singleAuction);
       var agent = clone(agents[2]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start(agent, function (err) {
         if (err) return done(err);
         auction.end(agent, function (err) {
@@ -176,7 +177,7 @@ describe('auction', function () {
 
     it('should not end if agent is invalid', function (done) {
       var options = clone(singleAuction);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.end({ agentId: null }, function (err) {
         err.message.should.match(/Invalid agent/)
         done();
@@ -186,7 +187,7 @@ describe('auction', function () {
     it('should not end an already ended auction', function (done) {
       var options = clone(singleAuction);
       var agent = clone(agents[0]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start(agent, function (err) {
         if (err) return done(err);
         auction.end(agent, function (err) {
@@ -202,7 +203,7 @@ describe('auction', function () {
     it('should not end a non started auction', function (done) {
       var options = clone(singleAuction);
       var agent = clone(agents[0]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.end(agent, function (err) {
         err.message.should.match(/not started/)
         done();
@@ -217,7 +218,7 @@ describe('auction', function () {
       var options = clone(singleAuction);
       var auctioneer = clone(agents[0]);
       var bidder = clone(agents[1]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start(auctioneer, function (err) {
         if (err) return done(err);
         var bid = {
@@ -245,7 +246,7 @@ describe('auction', function () {
       var options = clone(singleAuction);
       var auctioneer = clone(agents[0]);
       var bidder = clone(agents[1]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start(auctioneer, function (err) {
         if (err) return done(err);
         var bid = {
@@ -285,7 +286,7 @@ describe('auction', function () {
 
     it('should not place bid if agent is not registered', function (done) {
       var options = clone(singleAuction);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       var bid = {
         price: 25000,
         agentId: null
@@ -300,7 +301,7 @@ describe('auction', function () {
       var options = clone(singleAuction);
       var auctioneer = clone(agents[0]);
       var bidder = clone(agents[1]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       var bid = {
         price: 25000,
         agentId: bidder.agentId 
@@ -315,7 +316,7 @@ describe('auction', function () {
       var options = clone(singleAuction);
       var auctioneer = clone(agents[0]);
       var bidder = clone(agents[1]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       var bid = {
         price: 25000,
         agentId: bidder.agentId 
@@ -335,7 +336,7 @@ describe('auction', function () {
     it('should not place bid if price is lower than opening price', function (done) {
       var options = clone(singleAuction);
       var auctioneer = clone(agents[0]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start(auctioneer, function (err) {
         if (err) return done(err);
         var bid = {
@@ -352,7 +353,7 @@ describe('auction', function () {
     it('should accept first bid price to be 1 dollar higher than opening price', function (done) {
       var options = clone(singleAuction);
       var auctioneer = clone(agents[0]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start(auctioneer, function (err) {
         if (err) return done(err);
         var bid = {
@@ -371,7 +372,7 @@ describe('auction', function () {
     it('should accept bids after the first to be over the increment + opening price', function (done) {
       var options = clone(singleAuction);
       var auctioneer = clone(agents[0]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start(auctioneer, function (err) {
         if (err) return done(err);
         var bid = {
@@ -395,7 +396,7 @@ describe('auction', function () {
     it('should return error on invalid bid provided', function (done) {
       var options = clone(singleAuction);
       var auctioneer = clone(agents[0]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start(auctioneer, function (err) {
         if (err) return done(err);
         auction.bid(1234, function (err) {
@@ -408,7 +409,7 @@ describe('auction', function () {
     it('should return error on invalid bid price', function (done) {
       var options = clone(singleAuction);
       var auctioneer = clone(agents[0]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start(auctioneer, function (err) {
         if (err) return done(err);
         var bid = {
@@ -424,13 +425,84 @@ describe('auction', function () {
 
   });
 
+  describe('#authorize', function () {
+
+    it('should allow passing authorization method when creating auction', function () {
+      var options = clone(singleAuction);
+      function auth(cmd, data, done) {
+        done();
+      };
+      options.authorization = auth;
+      Auction(options)._auth.should.be.equal(auth);
+    });
+
+    it('should allow passing authorization', function () {
+      var options = clone(singleAuction);
+      function auth(cmd, data, done) {
+        done();
+      };
+      var auction = Auction(options);
+      auction.authorize(auth);
+      auction._auth.should.be.equal(auth);
+    });
+
+    it('should authorize correctly', function (done) {
+      var options = clone(singleAuction);
+
+      var db = [{
+        "agentId": "abc123",
+        "type": "auctioneer"
+      },{
+        "agentId": "abc456",
+        "type": "bidder"
+      },{
+        "agentId": "def123",
+        "type": "bidder"
+      }];
+
+      function auth(cmd, data, authorized) {
+        var agent = _.find(db, { agentId: data.agentId });
+        if ('start' === cmd) {
+          if (agent && agent.type === 'auctioneer') authorized();
+          else authorized({ message: 'not authorized' });
+        } else if ('bid' === cmd) {
+          if (agent && agent.type === 'bidder') authorized();
+          else authorized({ message: 'not authorized' });
+        }
+      };
+
+      var options = clone(singleAuction);
+      var auctioneer = clone(agents[0]);
+      var bidder = clone(agents[1]);
+      var auction = Auction(options);
+
+      auction.authorize(auth);
+      auction.start(db[1], function (err) {
+        err.message.should.match('not authorized');
+        auction.start(db[0], function (err) {
+          if (err) return done(err);
+          auction.auctionStatus.should.be.eql('started');
+          auction.started.agentId.should.be.eql(db[0].agentId);
+          var bid = { price: 25000, agentId: db[0].agentId, type: 'auctioneer' };
+          auction.bid(bid, function (err, b) {
+            err.message.should.match('not authorized');
+            var bid = { price: 25000, agentId: db[2].agentId, type: 'bidder' };
+            auction.bid(bid, done);
+          });
+        });
+      });
+      
+    });
+
+  });
+
   describe('#reset', function () {
 
     it('should allow destroying and auction', function (done) {
       var options = clone(singleAuction);
       var auctioneer = clone(agents[0]);
       var bidder = clone(agents[1]);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.start(auctioneer, function (err) {
         if (err) return done(err);
         var bid = { price: 25000, agentId: bidder.agentId };
@@ -464,7 +536,7 @@ describe('auction', function () {
 
     it('should allow destroying and auction', function (done) {
       var options = clone(singleAuction);
-      var auction = Auction.create(options);
+      var auction = Auction(options);
       auction.destroy(function (err) {
         if (err) return done(err);
         auction.destroyed.should.be.ok;
