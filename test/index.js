@@ -429,12 +429,11 @@ describe('auction', () => {
   describe('#authorize', () => {
 
     it('should allow passing authorization method when creating auction', () => {
-      let options = clone(singleAuction);
+      let data = clone(singleAuction);
       function auth(cmd, data, done) {
         done();
       };
-      options.authorization = auth;
-      new Auction(options)._auth.should.be.equal(auth);
+      new Auction(data, { authorization: auth })._auth.should.be.equal(auth);
     });
 
     it('should allow passing authorization', () => {
