@@ -1,6 +1,6 @@
 {
   "name": "auction",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Easy way to create auctions",
   "author": {
     "name": "Jonathan Brumley",
@@ -9,7 +9,7 @@
   "main": "./node/index",
   "scripts": {
     "test": "make test",
-    "postinstall": "make"
+    "prepublish": "make"
   },
   "repository": {
     "type": "git",
